@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<title>Criar conta</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>Criar conta</h1>
+    <form id="registerForm">
+      <label>Nome</label>
+      <input type="text" name="name" required />
+
+      <label>E-mail</label>
+      <input type="email" name="email" required />
+
+      <label>Senha (mín. 8 caracteres)</label>
+      <input type="password" name="password" minlength="8" required />
+
+      <button type="submit">Cadastrar</button>
+    </form>
+    <p id="message"></p>
+    <p>Já tem conta? <a href="login.html">Entrar</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const body = await res.json();
+
+      if (res.ok) {
+        window.location.href = 'perfil.html';
+      } else {
+        message.textContent = body.error || (body.errors && body.errors[0].msg) || 'Erro ao cadastrar.';
+      }
+    });
+  </script>
+</body>
+</html>

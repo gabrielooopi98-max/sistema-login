@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<title>Entrar</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>Entrar</h1>
+    <form id="loginForm">
+      <label>E-mail</label>
+      <input type="email" name="email" required />
+
+      <label>Senha</label>
+      <input type="password" name="password" required />
+
+      <button type="submit">Entrar</button>
+    </form>
+    <p id="message"></p>
+    <p>Não tem conta? <a href="register.html">Cadastre-se</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const body = await res.json();
+
+      if (res.ok) {
+        window.location.href = 'perfil.html';
+      } else {
+        message.textContent = body.error || (body.errors && body.errors[0].msg) || 'Erro ao entrar.';
+      }
+    });
+  </script>
+</body>
+</html>

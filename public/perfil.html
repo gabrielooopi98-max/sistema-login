@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<title>Meu perfil</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>Meu perfil</h1>
+    <div id="info">Carregando...</div>
+    <button id="logoutBtn">Sair</button>
+  </div>
+
+  <script>
+    const info = document.getElementById('info');
+
+    async function loadProfile() {
+      const res = await fetch('/api/auth/me');
+      if (!res.ok) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const body = await res.json();
+      info.innerHTML = `
+        <p><strong>Nome:</strong> ${body.user.name}</p>
+        <p><strong>E-mail:</strong> ${body.user.email}</p>
+        <p><strong>Conta criada em:</strong> ${new Date(body.user.created_at).toLocaleString('pt-BR')}</p>
+      `;
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = 'login.html';
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
